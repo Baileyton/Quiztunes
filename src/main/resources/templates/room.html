@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        section h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #141517;
+        }
+        .room-info {
+            align-items: center;
+        }
+        .btn-enter {
+            padding: 10px 20px;
+            background-color: #141517;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-enter:hover {
+            background-color: gray;
+        }
+        .chatContainer {
+            width: 100%;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .chat-body {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .message-text {
+            font-size: 14px;
+        }
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            background-color: #fff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        .send-button {
+            padding: 8px 20px;
+            background-color: #141517;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{common/header}"></header>
+<div class="container">
+    <section>
+        <div>
+            <h3>남은시간 30초부터 1초를 차감되는곳</h3>
+            <p>룰, 규칙이 나오고 30초뒤에 사라짐 현재라운드/100</p>
+        </div>
+        <div>
+            <div>방 이름</div>
+            <div class="room-info">현재 인원: 3 / 최대 인원: 5</div>
+            <button class="btn-enter">나가기</button>
+        </div>
+    </section>
+
+
+    <div class="chatContainer">
+        <div class="chat-body">
+            <div class="message-text">상대방 메시지 내용</div>
+            <div class="message-text">내 메시지 내용</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="message-input" placeholder="메시지 입력">
+            <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+<header th:replace="~{common/footer}"></header>
+</body>
+</html>
