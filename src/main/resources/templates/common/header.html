@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <style>
+        header {
+            background-color: #141517;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            height: 72px;
+        }
+        header h1 {
+            margin: 0;
+            padding: 10px;
+            font-size: 24px;
+        }
+        .search {
+            position: relative;
+            margin: 20px;
+            width: 300px;
+        }
+        .search input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+        }
+        .search button {
+            position: absolute;
+            right: -15px;
+            top: 1px;
+            padding: 10px;
+            background-color: #FFFFFF;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>QuizTunes</h1>
+    <div class="search">
+        <form id="Form" method="GET">
+            <label for="Name"></label>
+            <input type="text" id="Name" name="Name" placeholder="제목 검색" required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</header>
+</body>
+</html>
