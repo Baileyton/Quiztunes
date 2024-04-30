@@ -13,4 +13,12 @@ public class HelloController {
     public String main() {
         return "main";
     }
+    @GetMapping(value = "/room")
+    public String room() {
+        return "room";
+    }
+    @GetMapping(value = "/waiting")
+    public String waiting() {
+        return "waiting";
+    }
 }

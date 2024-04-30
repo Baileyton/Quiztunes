@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,16 +107,45 @@
 
 
     <div class="chatContainer">
-        <div class="chat-body">
-            <div class="message-text">상대방 메시지 내용</div>
-            <div class="message-text">내 메시지 내용</div>
-        </div>
+        <div class="chat-body"></div>
         <div class="chat-footer">
             <input type="text" class="message-input" placeholder="메시지 입력">
-            <button class="send-button"><i class="fas fa-paper-plane"></i></button>
+            <button class="send-button" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
 <header th:replace="~{common/footer}"></header>
 </body>
+<script>
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (response) {
+                showMessage(JSON.parse(response.body));
+            });
+        });
+    }
+
+    function showMessage(message) {
+        $(".chat-body").append("<div class='message-text'>" + message.sender + ": " + message.content + "</div>");
+    }
+
+    function sendMessage() {
+        var messageInput = $(".message-input").val();
+        var sender = "User";
+        stompClient.send("/app/chat", {}, JSON.stringify({
+            'content': messageInput,
+            'sender': sender
+        }));
+        $(".message-input").val('');
+    }
+
+    $(function () {
+        connect();
+    });
+</script>
 </html>
