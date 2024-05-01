@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        section h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #141517;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <section>
+        <div>
+            <h2 id="countdown">남은 시간</h2>
+            <p id="countdown-message">룰, 규칙이 나오고 30초뒤에 사라짐 현재라운드/100</p>
+            <button id="start-timer" class="btn-enter">타이머 시작</button>
+        </div>
+        <div>
+            <h2>방 이름</h2>
+            <p class="room-info">현재 인원: 3 / 최대 인원: 5</p>
+            <button class="btn-enter">나가기</button>
+        </div>
+    </section>
+
+    <section id="game1section" style="display: flex; justify-content: center; align-items: center;">
+        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">사</div>
+        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">자</div>
+        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">성</div>
+        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">어</div>
+    </section>
+
+    <section id="game2section" style="display: flex; justify-content: center; align-items: center;">
+        <div style="text-align: center; font-size: 24px">
+            사자성어의 뜻
+        </div>
+    </section>
+</div>
+</body>
+<script>
+    // 타이머 시작 함수
+    function startTimer() {
+        // 시작 시간 설정 (현재 시간으로부터 30초 후)
+        const startTime = new Date().getTime() + 30000;
+
+        // 남은 시간 업데이트 함수
+        function updateCountdown() {
+            const currentTime = new Date().getTime();
+            const remainingTime = startTime - currentTime;
+
+            // 남은 시간을 초 단위로 계산
+            const seconds = Math.max(Math.floor((remainingTime % (1000 * 60)) / 1000), 0);
+
+            // 시간 표시 업데이트
+            document.getElementById('countdown').innerHTML = `남은 시간: ${seconds}초`;
+
+            // 1초마다 업데이트
+            if (remainingTime > 0) {
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+
+        // 카운트다운 시작
+        updateCountdown();
+    }
+
+    // 타이머 시작 버튼에 이벤트 리스너 추가
+    document.getElementById('start-timer').addEventListener('click', startTimer);
+</script>
+</html>

@@ -10,12 +10,63 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        .section:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        .section:nth-child(even) {
+            background-color: #d3d3d3;
+        }
     </style>
 </head>
 <body>
 <header th:replace="~{common/header}"></header>
-
+<div>
+    <div id="section1" class="section">Section 1</div>
+    <div id="section2" class="section">Section 2</div>
+    <div id="section3" class="section">Section 3</div>
+</div>
 <header th:replace="~{common/footer}"></header>
 </body>
+<script>
+    // 페이지 스크롤 이벤트 감지
+    window.addEventListener('scroll', function() {
+        // 각 섹션 요소 가져오기
+        const section1 = document.getElementById('section1');
+        const section2 = document.getElementById('section2');
+        const section3 = document.getElementById('section3');
+
+        // 각 섹션의 위치 계산
+        const section1Top = section1.getBoundingClientRect().top;
+        const section2Top = section2.getBoundingClientRect().top;
+        const section3Top = section3.getBoundingClientRect().top;
+
+        // 스크롤 위치에 따라 동작할 구간 정의
+        const offset = 100; // 스크롤 동작 구간에서의 여백
+
+        // 첫 번째 섹션에 도달했을 때
+        if (section1Top < offset) {
+            console.log('Reached section 1');
+            // 여기에서 원하는 동작 수행
+        }
+
+        // 두 번째 섹션에 도달했을 때
+        if (section2Top < offset) {
+            console.log('Reached section 2');
+            // 여기에서 원하는 동작 수행
+        }
+
+        // 세 번째 섹션에 도달했을 때
+        if (section3Top < offset) {
+            console.log('Reached section 3');
+            // 여기에서 원하는 동작 수행
+        }
+    });
+</script>
 </html>
