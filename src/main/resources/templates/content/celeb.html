@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>인물 퀴즈</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,6 +32,44 @@
             font-size: 20px;
             color: #141517;
         }
+        .chatContainer {
+            width: 100%;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .chat-body {
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .message-text {
+            font-size: 14px;
+        }
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            background-color: #fff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        .send-button {
+            padding: 8px 20px;
+            background-color: #141517;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -49,30 +88,19 @@
         </div>
     </section>
 
-    <section id="game1section" style="display: flex; justify-content: center; align-items: center;">
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">사</div>
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">자</div>
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">성</div>
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">어</div>
-    </section>
-
-    <section id="game2section" style="display: flex; justify-content: center; align-items: center;">
-        <div style="text-align: center; font-size: 24px">
-            사자성어의 뜻
-        </div>
-    </section>
-
-    <section id="game3section" style="display: flex; justify-content: center; align-items: center;">
-        <div id="now-playing" style="text-align: center; font-size: 24px">
-            Now Playing...
-        </div>
-    </section>
-
-    <section id="game4section" style="display: flex; justify-content: center; align-items: center;">
+    <section id="gameSection" style="display: flex; justify-content: center; align-items: center;">
         <div id="image-container" style="text-align: center;">
             <img id="image" src="default.jpg" alt="사진" style="max-width: 100%; max-height: 100%;">
         </div>
     </section>
+
+    <div class="chatContainer">
+        <div class="chat-body"></div>
+        <div class="chat-footer">
+            <input type="text" class="message-input" placeholder="메시지 입력">
+            <button class="send-button" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 </div>
 </body>
 <script>
@@ -105,26 +133,6 @@
     // 타이머 시작 버튼에 이벤트 리스너 추가
     document.getElementById('start-timer').addEventListener('click', startTimer);
 
-    // 노래 정보
-    const songTitle = "노래 제목";
-    const artist = "가수";
-
-    // 노래가 플레이되고 있을 때 실행되는 함수
-    function nowPlaying() {
-        // "Now Playing..." 문구를 표시
-        document.getElementById('now-playing').innerText = "Now Playing...";
-
-        // 5초 후에 노래 정보를 표시
-        setTimeout(() => {
-            // 노래 정보 표시
-            document.getElementById('now-playing').innerText = `${songTitle} - ${artist}`;
-        }, 5000); // 5초
-    }
-
-    // 노래가 플레이될 때 실행
-    nowPlaying();
-
-    // 노래를 맞추면 해당 노래의 제목과 가수를 표시
     function correctAnswer() {
         // 정답 표시
         document.getElementById('now-playing').innerText = `${songTitle} - ${artist}`;
@@ -153,5 +161,36 @@
 
     // 주기적으로 이미지 변경
     setInterval(changeImage, interval);
+
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (response) {
+                showMessage(JSON.parse(response.body));
+            });
+        });
+    }
+
+    function showMessage(message) {
+        $(".chat-body").append("<div class='message-text'>" + message.sender + ": " + message.content + "</div>");
+    }
+
+    function sendMessage() {
+        var messageInput = $(".message-input").val();
+        var sender = "User";
+        stompClient.send("/app/chat", {}, JSON.stringify({
+            'content': messageInput,
+            'sender': sender
+        }));
+        $(".message-input").val('');
+    }
+
+    $(function () {
+        connect();
+    });
 </script>
 </html>
