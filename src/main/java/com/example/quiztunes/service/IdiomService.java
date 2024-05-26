@@ -19,7 +19,6 @@ public class IdiomService {
 
     private final IdiomRepository idiomRepository;
 
-    @Autowired
     public IdiomService(IdiomRepository idiomRepository) {
         this.idiomRepository = idiomRepository;
     }
@@ -28,7 +27,7 @@ public class IdiomService {
         List<Idiom> idioms = idiomRepository.findAll();
         long seed = System.nanoTime();
         Collections.shuffle(idioms, new Random(seed));
-        logger.info("Idioms: {}", idioms);
+        logger.info("Idioms : {}", idioms.size());
         return idioms;
     }
 

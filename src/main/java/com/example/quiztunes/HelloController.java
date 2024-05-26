@@ -21,4 +21,14 @@ public class HelloController {
     public String waiting() {
         return "waiting";
     }
+
+    @GetMapping("/idiom")
+    public String idiom() {
+        return "content/idiom";
+    }
+
+    @GetMapping("/idioms")
+    public String idioms() {
+        return "content/idioms";
+    }
 }

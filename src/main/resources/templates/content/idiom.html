@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>인물 퀴즈</title>
+    <title></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,7 +77,6 @@
 </head>
 <body>
 <div class="container">
-
     <section>
         <div>
             <h2 id="countdown">남은 시간</h2>
@@ -88,11 +90,11 @@
         </div>
     </section>
 
-    <section id="gameSection" style="display: flex; justify-content: center; align-items: center;" th:each="idiom : ${idioms}">
-        <div th:text="${idiom.word[0]}" style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">사</div>
-        <div th:text="${idiom.word[1]}" style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">자</div>
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">ㅇ</div>
-        <div style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">ㅇ</div>
+    <section id="gameSection" style="display: flex; justify-content: center; align-items: center;">
+        <p id="firstChar" style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">사</p>
+        <p id="secondChar" style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">자</p>
+        <p style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">ㅇ</p>
+        <p style="width: 100px; height: 100px; margin: 10px; background-color: #f0f0f0; text-align: center; font-size: 64px;">ㅇ</p>
     </section>
 
     <div class="chatContainer">
@@ -134,33 +136,98 @@
     // 타이머 시작 버튼에 이벤트 리스너 추가
     document.getElementById('start-timer').addEventListener('click', startTimer);
 
+    var stompClient = null;
+
     function connect() {
         var socket = new SockJS('/chat');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/messages', function (response) {
-                showMessage(JSON.parse(response.body));
+                onChatMessageReceived(JSON.parse(response.body));
             });
         });
     }
 
-    function showMessage(message) {
-        $(".chat-body").append("<div class='message-text'>" + message.sender + ": " + message.content + "</div>");
+    function sendMessage() {
+        var message = $(".message-input").val().trim();
+        if (message === "") {
+            return;
+        }
+        stompClient.send("/app/chat", {}, JSON.stringify({'content': message}));
+        $(".message-input").val('');
     }
 
-    function sendMessage() {
-        var messageInput = $(".message-input").val();
-        var sender = "User";
-        stompClient.send("/app/chat", {}, JSON.stringify({
-            'content': messageInput,
-            'sender': sender
-        }));
-        $(".message-input").val('');
+    function showMessage(message) {
+        $(".chat-body").append("<div class='message-text'>" + message.sender + ": " + message.content + "</div>");
+        var chatBody = $(".chat-body");
+        chatBody.scrollTop(chatBody.prop("scrollHeight"));
     }
 
     $(function () {
         connect();
+        $(".message-input").on("keyup", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
     });
+
+    $(function () {
+        function fetchIdioms() {
+            $.get("/api/idiom", function(response){
+                idioms = response;
+                console.log(idioms);
+                showIdiom();
+            });
+        }
+
+        fetchIdioms();
+    });
+
+    var idiomIndex = 0;
+    var idioms = [];
+
+    function showIdiom() {
+        var currentIdiom = idioms[idiomIndex];
+
+        document.getElementById("firstChar").innerText = currentIdiom.word.substring(0, 1);
+        document.getElementById("secondChar").innerText = currentIdiom.word.substring(1, 2);
+    }
+
+    function nextIdiom() {
+        idiomIndex++;
+        if(idiomIndex < idioms.length) {
+            showIdiom();
+        } else {
+            endGame();
+        }
+    }
+
+    function endGame() {
+        // 여기에 게임 종료 처리를 추가하세요.
+        console.log("게임 종료");
+        // 예를 들어, 화면에 게임 종료 메시지를 표시하거나, 게임 리셋 등의 동작을 수행할 수 있습니다.
+    }
+
+    function checkChatMessage(message) {
+        var currentIdiom = idioms[idiomIndex];
+        var secondChar = currentIdiom.word.substring(2, 4);
+
+        var userSecondChar = message;
+
+        if (secondChar === userSecondChar) {
+            nextIdiom();
+        }
+    }
+
+    function onChatMessageReceived(message) {
+        showMessage(message);
+        checkChatMessage(message.content);
+    }
+
+
+
+
 </script>
 </html>
