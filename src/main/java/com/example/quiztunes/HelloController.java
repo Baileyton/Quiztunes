@@ -27,8 +27,4 @@ public class HelloController {
         return "content/idiom";
     }
 
-    @GetMapping("/idioms")
-    public String idioms() {
-        return "content/idioms";
-    }
 }

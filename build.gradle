@@ -31,10 +31,6 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	//websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	//Maria DB
-	implementation 'org.mariadb.jdbc:mariadb-java-client'
-	//jpa
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
 
 tasks.named('test') {

@@ -154,7 +154,7 @@
         if (message === "") {
             return;
         }
-        stompClient.send("/app/chat", {}, JSON.stringify({'content': message}));
+        stompClient.send("/app/chat", {}, JSON.stringify({'sender': '익명','content': message}));
         $(".message-input").val('');
     }
 
